@@ -1,0 +1,12 @@
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/bin/Debug/net7.0/MySqlLibrary.deps.json
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/bin/Debug/net7.0/MySqlLibrary.dll
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/bin/Debug/net7.0/MySqlLibrary.pdb
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/MySqlLibrary.csproj.AssemblyReference.cache
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/MySqlLibrary.GeneratedMSBuildEditorConfig.editorconfig
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/MySqlLibrary.AssemblyInfoInputs.cache
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/MySqlLibrary.AssemblyInfo.cs
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/MySqlLibrary.csproj.CoreCompileInputs.cache
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/MySqlLibrary.dll
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/refint/MySqlLibrary.dll
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/MySqlLibrary.pdb
+/Users/harrihonkanen/Projects/ProjectManager/MySqlLibrary/obj/Debug/net7.0/ref/MySqlLibrary.dll

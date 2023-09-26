@@ -1,0 +1,75 @@
+﻿<div class="top-row ps-3 navbar navbar-dark">
+    <div class="container-fluid">
+        <a class="navbar-brand" href="">Project Manager</a>
+        <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+    </div>
+</div>
+
+<div class="@NavMenuCssClass nav-scrollable">
+    <nav class="flex-column">
+        <!-- Main Page navlink -->
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+                <span class="oi oi-home" aria-hidden="true"></span> Main Page
+            </NavLink>
+        </div>
+        <!-- Projects navlink -->
+        <div class="nav-item px-3">
+            <div class="dropdown">
+                <NavLink class="nav-link dropdown-toggle" href="projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="oi oi-list-rich" aria-hidden="true"></span> Projects
+                </NavLink>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Locations</h6></li>
+                    @foreach (RelationModel childRelation in childRelations)
+                    {
+                        <li><a class="dropdown-item" href="projects/location/@childRelation.Id">@childRelation.Relation_name</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+        <!-- Add navlink -->
+        <div class="nav-item px-3">
+            <div class="dropdown">
+                <NavLink class="nav-link dropdown-toggle" href="Add" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <span class="oi oi-plus" aria-hidden="true"></span> Add
+                </NavLink>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Actions</h6></li>
+                    <li><a class="dropdown-item" href="#">New Location</a></li>
+                    <li><a class="dropdown-item" href="#">New Department</a></li>
+                    <li><a class="dropdown-item" href="#">New Project</a></li>
+                </ul>
+            </div>
+        </div>
+
+    </nav>
+</div>
+
+@code {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private List<RelationModel> childRelations = new();
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+
+    protected override void OnInitialized()
+    {
+        GetCildRelations();
+    }
+
+    //Get all child relations
+    private void GetCildRelations()
+    {
+        childRelations = RelationDataAccess.GetChildRelations(null);
+    }
+
+    }
+

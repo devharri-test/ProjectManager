@@ -1,0 +1,36 @@
+﻿@page "/projects/project/{ProjectId:int}"
+@inject IEmptyClass EmptyClass
+
+<PageTitle>Projects - @EmptyClass.location</PageTitle>
+<ProjectNavigation></ProjectNavigation>
+<h1>@project.Relation_name</h1>
+
+List of PLC's here:
+
+@code {
+    [Parameter]
+    public int? ProjectId { get; set; }
+
+    public RelationModel project = new();
+    public List<RelationModel> ChildRelations = new();
+
+    protected override void OnInitialized()
+    {
+        GetRelationWithId();
+        GetChildRelations();
+        EmptyClass.proj = project.Relation_name;
+        EmptyClass.projId = ProjectId;
+    }
+
+    //Get relation
+    private void GetRelationWithId()
+    {
+        project = RelationDataAccess.GetRelation(ProjectId);
+    }
+
+    //Get all child relations
+    private void GetChildRelations()
+    {
+        ChildRelations = RelationDataAccess.GetChildRelations(ProjectId);
+    }
+}

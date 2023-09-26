@@ -1,0 +1,44 @@
+﻿@page "/projects/department/{DepartmentId:int}"
+@inject IEmptyClass EmptyClass
+
+<PageTitle>Projects - @EmptyClass.location</PageTitle>
+<ProjectNavigation></ProjectNavigation>
+<h1> @department.Relation_name</h1>
+
+List of projects here:
+@foreach (RelationModel childRelation in ChildRelations)
+{
+    <a href="projects/project/@childRelation.Id">@childRelation.Relation_name</a>
+}
+
+@code {
+    [Parameter]
+    public int? DepartmentId { get; set; }
+
+    public RelationModel department = new();
+    public List<RelationModel> ChildRelations = new();
+
+    protected override void OnInitialized()
+    {
+        GetRelationWithId();
+        GetChildRelations();
+        EmptyClass.dept = department.Relation_name;
+        EmptyClass.deptId = DepartmentId;
+
+        EmptyClass.proj = "";
+        EmptyClass.projId = 0;
+    }
+
+    //Get relation
+    private void GetRelationWithId()
+    {
+        department = RelationDataAccess.GetRelation(DepartmentId);
+    }
+
+    //Get all child relations
+    private void GetChildRelations()
+    {
+        ChildRelations = RelationDataAccess.GetChildRelations(DepartmentId);
+    }
+}
+
