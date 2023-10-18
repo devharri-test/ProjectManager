@@ -12,12 +12,17 @@
     <None Remove="Data\" />
     <None Remove="Pages\Projects\" />
     <None Remove="Services\" />
+    <None Remove="Shared\Projects\" />
+    <None Remove="Shared\Projects\Cards\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Pages\Projects\" />
     <Folder Include="Services\" />
     <Folder Include="wwwroot\js\" />
+    <Folder Include="wwwroot\img\" />
+    <Folder Include="Shared\Projects\" />
+    <Folder Include="Shared\Projects\Cards\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MySqlLibrary\MySqlLibrary.csproj">
@@ -26,5 +31,6 @@
   </ItemGroup>
   <ItemGroup>
     <Content Remove="wwwroot\js\" />
+    <Content Remove="wwwroot\img\" />
   </ItemGroup>
 </Project>

@@ -11,19 +11,19 @@
     <nav class="flex-column">
         <!-- Main Page navlink -->
         <div class="nav-item px-3">
-            <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
+            <NavLink class="nav-link px-1" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Main Page
             </NavLink>
         </div>
         <!-- Projects navlink -->
         <div class="nav-item px-3">
             <div class="dropdown">
-                <NavLink class="nav-link dropdown-toggle" href="projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <NavLink class="nav-link dropdown-toggle px-1" href="projects" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="oi oi-list-rich" aria-hidden="true"></span> Projects
                 </NavLink>
                 <ul class="dropdown-menu">
                     <li><h6 class="dropdown-header">Locations</h6></li>
-                    @foreach (RelationModel childRelation in childRelations)
+                    @foreach (RelationModel childRelation in ChildRelations)
                     {
                         <li><a class="dropdown-item" href="projects/location/@childRelation.Id">@childRelation.Relation_name</a></li>
                     }
@@ -33,7 +33,7 @@
         <!-- Add navlink -->
         <div class="nav-item px-3">
             <div class="dropdown">
-                <NavLink class="nav-link dropdown-toggle" href="Add" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                <NavLink class="nav-link dropdown-toggle px-1" href="Add" role="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <span class="oi oi-plus" aria-hidden="true"></span> Add
                 </NavLink>
                 <ul class="dropdown-menu">
@@ -53,7 +53,7 @@
 
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
-    private List<RelationModel> childRelations = new();
+    private List<RelationModel> ChildRelations = new();
 
     private void ToggleNavMenu()
     {
@@ -68,7 +68,7 @@
     //Get all child relations
     private void GetCildRelations()
     {
-        childRelations = RelationDataAccess.GetChildRelations(null);
+        ChildRelations = RelationDataAccess.GetChildRelations(null);
     }
 
     }

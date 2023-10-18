@@ -1,0 +1,43 @@
+﻿<div class="col">
+    <div class="card p-0 h-100" style="">
+        <div class="card-header d-flex flex-row align-items-center justify-content-between" style="background-color: rgb(253,253,253); color: rgb(51,51,51);">
+            <div>Machine</div>
+            <div class="dropdown p-0">
+                <button type="button" class="btn dropdown p-0" data-bs-toggle="dropdown">
+                    <span class="oi oi-menu" aria-hidden="true"></span>
+                </button>
+                <ul class="dropdown-menu">
+                    <li><h6 class="dropdown-header">Menu</h6></li>
+                    <li><a class="dropdown-item" href="projects/machine/@CardId">Open</a></li>
+                    <li><a class="dropdown-item disabled" href="">Add favorite</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    <li><a class="dropdown-item" @onclick="OnClickButton" type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop1">Delete</a></li>
+                </ul>
+            </div>
+        </div>
+        <a href="projects/machine/@CardId" class="card-body" style="background-color: rgb(253,253,253); color: rgb(51,51,51); text-decoration: none">
+            <h4 class="card-title">@CardName</h4>
+            <p class="card-text">@CardText</p>
+        </a>
+        <div class="card-footer" style="background-color: rgb(253,253,253); color: rgb(51,51,51); ">
+            <small class="text-body-secondary">@FooterText</small>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public int? CardId { get; set; }
+    [Parameter]
+    public string? CardName { get; set; }
+    [Parameter]
+    public string? CardText { get; set; }
+    [Parameter]
+    public string? FooterText { get; set; }
+    [Parameter]
+    public EventCallback<int?> OnClickCallback { get; set; }
+
+    public async Task OnClickButton()
+    {
+        await OnClickCallback.InvokeAsync(CardId);
+    }
+}
