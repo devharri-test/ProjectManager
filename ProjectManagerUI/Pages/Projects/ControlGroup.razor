@@ -62,7 +62,7 @@
 </div>
 
 <!-- Modal - Add child relation -->
-<AddChildModal NewChild="@NewFunctionGroup" OnSubmitCallback="@SubmitAddFunctionGroup"></AddChildModal>
+<AddChildModal ParentId="@ControlGroupId" RoleId="6" OnSubmitCallback="@SubmitAddFunctionGroup"></AddChildModal>
 <!-- Modal - Edit relation -->
 <EditRelationModal UpdatedRelation="@UpdatedControlGroup" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateControlGroup"></EditRelationModal>
 
@@ -155,12 +155,8 @@
     }
     #endregion
     #region FeatureCreateNewFunctionGroup
-    public RelationModel NewFunctionGroup = new();
     private async Task SubmitAddFunctionGroup()
     {
-        NewFunctionGroup.Parent_id = ControlGroupId;
-        NewFunctionGroup.Role_id = 6;
-        var result = await RelationDataAccess.PostRelationAsync(NewFunctionGroup);
         await GetChildRelations();
     }
     #endregion

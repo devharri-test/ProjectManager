@@ -60,7 +60,7 @@
     </ul>
 </div>
 <!-- Modal - Add child relation -->
-<AddChildModal NewChild="@NewDepartment" OnSubmitCallback="@SubmitAddDepartment"></AddChildModal>
+<AddChildModal ParentId="@LocationId" RoleId="2" OnSubmitCallback="@SubmitAddDepartment"></AddChildModal>
 <!-- Modal - Edit relation -->
 <EditRelationModal UpdatedRelation="@UpdatedLocation" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateLocation"></EditRelationModal>
 
@@ -122,12 +122,8 @@
     }
     #endregion
     #region FeatureCreateNewDepartment
-    private RelationModel NewDepartment = new();
     private async Task SubmitAddDepartment()
     {
-        NewDepartment.Parent_id = LocationId;
-        NewDepartment.Role_id = 2;
-        var result = await RelationDataAccess.PostRelationAsync(NewDepartment);
         await GetChildRelations();
     }
     #endregion
@@ -152,7 +148,6 @@
     private async Task SubmitUpdateLocation()
     {
         var result = await RelationDataAccess.UpdateRelationAsync(UpdatedLocation);
-
     }
     #endregion
 }

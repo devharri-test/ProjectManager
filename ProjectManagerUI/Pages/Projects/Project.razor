@@ -61,7 +61,7 @@
 </div>
 
 <!-- Modal - Add child relation -->
-<AddChildModal NewChild="@NewController" OnSubmitCallback="@SubmitAddController"></AddChildModal>
+<AddChildModal ParentId="@ProjectId" RoleId="4" OnSubmitCallback="@SubmitAddController"></AddChildModal>
 <!-- Modal - Edit relation -->
 <EditRelationModal UpdatedRelation="@UpdatedProject" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateProject"></EditRelationModal>
 
@@ -122,12 +122,8 @@
     }
     #endregion
     #region FeatureCreateNewController
-    public RelationModel NewController = new();
     private async Task SubmitAddController()
     {
-        NewController.Parent_id = ProjectId;
-        NewController.Role_id = 4;
-        var result = await RelationDataAccess.PostRelationAsync(NewController);
         await GetChildRelations();
     }
     #endregion

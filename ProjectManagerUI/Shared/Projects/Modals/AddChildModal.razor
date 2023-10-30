@@ -22,12 +22,18 @@
 </div>
 @code {
     [Parameter]
-    public RelationModel? NewChild { get; set; }
+    public int? ParentId { get; set; }
+    [Parameter]
+    public int? RoleId { get; set; }
     [Parameter]
     public EventCallback OnSubmitCallback { get; set; }
+    public RelationModel NewChild = new();
 
     public async Task OnSubmit()
     {
+        NewChild.Parent_id = ParentId;
+        NewChild.Role_id = RoleId;
+        var result = await RelationDataAccess.PostRelationAsync(NewChild);
         await OnSubmitCallback.InvokeAsync();
     }
 }

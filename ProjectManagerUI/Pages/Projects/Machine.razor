@@ -62,7 +62,7 @@
 </div>
 
 <!-- Modal - Add child relation -->
-<AddChildModal NewChild="@NewPart" OnSubmitCallback="@SubmitAddPart"></AddChildModal>
+<AddChildModal ParentId="@MachineId" RoleId="8" OnSubmitCallback="@SubmitAddPart"></AddChildModal>
 <!-- Modal - Edit relation -->
 <EditRelationModal UpdatedRelation="@UpdatedMachine" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateMachine"></EditRelationModal>
 
@@ -123,12 +123,8 @@
     }
     #endregion
     #region FeatureCreateNewPart
-    public RelationModel NewPart = new();
     private async Task SubmitAddPart()
     {
-        NewPart.Parent_id = MachineId;
-        NewPart.Role_id = 8;
-        var result = await RelationDataAccess.PostRelationAsync(NewPart);
         await GetChildRelations();
     }
     #endregion
