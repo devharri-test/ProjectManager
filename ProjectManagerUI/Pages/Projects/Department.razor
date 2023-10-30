@@ -63,7 +63,7 @@
 <!-- Modal - Add child relation -->
 <AddChildModal ParentId="@DepartmentId" RoleId="3" OnSubmitCallback="@SubmitAddProject"></AddChildModal>
 <!-- Modal - Edit relation -->
-<EditRelationModal UpdatedRelation="@UpdatedDepartment" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateDepartment"></EditRelationModal>
+<EditRelationModal UpdatedRelation="@department" ParentId="@department.Parent_id" OnSubmitCallback="@SubmitUpdateDepartment"></EditRelationModal>
 
 <!-- Modal - Delete child relation -->
 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
@@ -94,7 +94,7 @@
 @code {
     #region PageBase
     [Parameter]
-    public int? DepartmentId { get; set; }
+    public int DepartmentId { get; set; }
     private int? ClickedCardId { get; set; }
     private RelationModel department = new();
     private List<RelationModel> ChildRelations = new();
@@ -103,8 +103,6 @@
         GetRelationWithId();
         await GetChildRelations();
         EmptyClass.SetDepartment(department.Relation_name, DepartmentId);
-        UpdatedDepartment = department;
-        await GetPossibleParents();
     }
     //Get relation
     private void GetRelationWithId()
@@ -135,19 +133,8 @@
     }
     #endregion
     #region FeatureUpdateDepartment
-    private RelationModel UpdatedDepartment = new();
-    private List<RelationModel> PossibleParents = new();
-    private async Task GetPossibleParents()
+    private void SubmitUpdateDepartment()
     {
-        if (department.Parent_id >= 0)
-        {
-            RelationModel parent = RelationDataAccess.GetRelation(department.Parent_id);
-            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
-        }
-    }
-    private async Task SubmitUpdateDepartment()
-    {
-        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedDepartment);
     }
     #endregion
 }

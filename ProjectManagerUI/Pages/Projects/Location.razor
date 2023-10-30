@@ -62,7 +62,7 @@
 <!-- Modal - Add child relation -->
 <AddChildModal ParentId="@LocationId" RoleId="2" OnSubmitCallback="@SubmitAddDepartment"></AddChildModal>
 <!-- Modal - Edit relation -->
-<EditRelationModal UpdatedRelation="@UpdatedLocation" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateLocation"></EditRelationModal>
+<EditRelationModal UpdatedRelation="@location" ParentId="@location.Parent_id" OnSubmitCallback="@SubmitUpdateLocation"></EditRelationModal>
 
 <!-- Modal - Delete child relation -->
 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
@@ -93,7 +93,7 @@
 @code {
     #region PageBase
     [Parameter]
-    public int? LocationId { get; set; }
+    public int LocationId { get; set; }
     private int? ClickedCardId { get; set; }
     private RelationModel location = new();
     private List<RelationModel> ChildRelations = new();
@@ -102,8 +102,6 @@
         GetRelationWithId();
         await GetChildRelations();
         EmptyClass.SetLocation(location.Relation_name, location.Id);
-        UpdatedLocation = location;
-        await GetPossibleParents();
     }
     //Get relation
     private void GetRelationWithId()
@@ -135,19 +133,8 @@
     }
     #endregion
     #region FeatureUpdateLocation
-    private RelationModel UpdatedLocation = new();
-    private List<RelationModel> PossibleParents = new();
-    private async Task GetPossibleParents()
+    private void SubmitUpdateLocation()
     {
-        if (location.Parent_id >= 0)
-        {
-            RelationModel parent = RelationDataAccess.GetRelation(location.Parent_id);
-            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
-        }
-    }
-    private async Task SubmitUpdateLocation()
-    {
-        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedLocation);
     }
     #endregion
 }

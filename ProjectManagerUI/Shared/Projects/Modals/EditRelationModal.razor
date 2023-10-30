@@ -7,7 +7,7 @@
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
             <div class="modal-body text-center">
-                <EditForm Model="@UpdatedRelation" OnSubmit="@OnSubmitCallback" class="row g-3">
+                <EditForm Model="@UpdatedRelation" OnSubmit="@OnSubmit" class="row g-3">
                     <div class="col-12 mb-1">
                         <label for="editRelationModalInput1" class="form-label">Name</label>
                         <InputText class="form-control" id="editRelationModalInput1" @bind-Value="UpdatedRelation!.Relation_name" />
@@ -35,14 +35,30 @@
 </div>
 @code {
     [Parameter]
-    public RelationModel? UpdatedRelation { get; set; }
+    public RelationModel UpdatedRelation { get; set; } = new();
     [Parameter]
-    public List<RelationModel>? PossibleParents { get; set; }
+    public int? ParentId { get; set; }
     [Parameter]
     public EventCallback OnSubmitCallback { get; set; }
 
+    protected override async Task OnInitializedAsync()
+    {
+        await GetPossibleParents();
+    }
+
+    private List<RelationModel> PossibleParents = new();
+    private async Task GetPossibleParents()
+    {
+        if (ParentId >= 0)
+        {
+            RelationModel parent = RelationDataAccess.GetRelation(ParentId);
+            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
+        }
+    }
+
     public async Task OnSubmit()
     {
+        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedRelation);
         await OnSubmitCallback.InvokeAsync();
     }
 }

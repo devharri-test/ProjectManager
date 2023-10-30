@@ -58,7 +58,7 @@
 <EditRelationModal UpdatedRelation="@UpdatedPart" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdatePart"></EditRelationModal>
 @code {
     [Parameter]
-    public int? PartId { get; set; }
+    public int PartId { get; set; }
     public RelationModel part = new();
     protected override async Task OnInitializedAsync()
     {

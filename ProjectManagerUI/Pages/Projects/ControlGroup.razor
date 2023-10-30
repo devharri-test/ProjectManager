@@ -64,7 +64,7 @@
 <!-- Modal - Add child relation -->
 <AddChildModal ParentId="@ControlGroupId" RoleId="6" OnSubmitCallback="@SubmitAddFunctionGroup"></AddChildModal>
 <!-- Modal - Edit relation -->
-<EditRelationModal UpdatedRelation="@UpdatedControlGroup" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateControlGroup"></EditRelationModal>
+<EditRelationModal UpdatedRelation="@controlGroup" ParentId="controlGroup.Parent_id" OnSubmitCallback="@SubmitUpdateControlGroup"></EditRelationModal>
 
 <!-- Modal - Delete child relation -->
 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
@@ -92,42 +92,10 @@
         </div>
     </div>
 </div>
-<!-- Modal - Edit relation -->
-<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel2">Edit Control Group</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <EditForm Model="@UpdatedControlGroup" OnSubmit="@SubmitUpdateControlGroup" class="row g-3">
-                    <div class="col-12 mb-1">
-                        <label for="formGroupExampleInput2" class="form-label">Name</label>
-                        <InputText class="form-control" id="formGroupExampleInput2" @bind-Value="UpdatedControlGroup!.Relation_name" />
-                    </div>
-                    <div class="col-12 mb-1">
-                        <label for="formGroupExampleInput3" class="form-label">Parent relation</label>
-                        <InputSelect class="form-select" id="formGroupExampleInput3" @bind-Value="UpdatedControlGroup!.Parent_id">
-                            <option selected>Select parent ...</option>
-                            @foreach (var item in PossibleParents)
-                            {
-                                <option value="@item.Id">@item.Relation_name</option>
-                            }
-                        </InputSelect>
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Update</button>
-                    </div>
-                </EditForm>
-            </div>
-        </div>
-    </div>
-</div>
 @code {
     #region PageBase
     [Parameter]
-    public int? ControlGroupId { get; set; }
+    public int ControlGroupId { get; set; }
     public int? ClickedCardId { get; set; }
     public RelationModel controlGroup = new();
     public List<RelationModel> ChildRelations = new();
@@ -136,8 +104,6 @@
         GetRelationWithId();
         await GetChildRelations();
         EmptyClass.SetControlGroup(controlGroup.Relation_name, ControlGroupId);
-        UpdatedControlGroup = controlGroup;
-        await GetPossibleParents();
     }
     //Get relation
     private void GetRelationWithId()
@@ -168,19 +134,8 @@
     }
     #endregion
     #region FeatureUpdateConrolGroup
-    private RelationModel UpdatedControlGroup = new();
-    private List<RelationModel> PossibleParents = new();
-    private async Task GetPossibleParents()
+    private void SubmitUpdateControlGroup()
     {
-        if (controlGroup.Parent_id >= 0)
-        {
-            RelationModel parent = RelationDataAccess.GetRelation(controlGroup.Parent_id);
-            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
-        }
-    }
-    private async Task SubmitUpdateControlGroup()
-    {
-        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedControlGroup);
     }
     #endregion
 }

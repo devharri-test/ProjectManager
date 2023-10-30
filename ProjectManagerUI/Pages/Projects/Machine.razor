@@ -64,7 +64,7 @@
 <!-- Modal - Add child relation -->
 <AddChildModal ParentId="@MachineId" RoleId="8" OnSubmitCallback="@SubmitAddPart"></AddChildModal>
 <!-- Modal - Edit relation -->
-<EditRelationModal UpdatedRelation="@UpdatedMachine" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateMachine"></EditRelationModal>
+<EditRelationModal UpdatedRelation="@machine" ParentId="machine.Parent_id" OnSubmitCallback="@SubmitUpdateMachine"></EditRelationModal>
 
 <!-- Modal - Delete child relation -->
 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
@@ -95,7 +95,7 @@
 @code {
     #region PageBase
     [Parameter]
-    public int? MachineId { get; set; }
+    public int MachineId { get; set; }
     public int? ClickedCardId { get; set; }
     public RelationModel machine = new();
     public List<RelationModel> ChildRelations = new();
@@ -104,8 +104,6 @@
         GetRelationWithId();
         await GetChildRelations();
         EmptyClass.SetMachine(machine.Relation_name, MachineId);
-        UpdatedMachine = machine;
-        await GetPossibleParents();
     }
     //Get relation
     private void GetRelationWithId()
@@ -136,19 +134,8 @@
     }
     #endregion
     #region FeatureUpdateMachine
-    private RelationModel UpdatedMachine = new();
-    private List<RelationModel> PossibleParents = new();
-    private async Task GetPossibleParents()
+    private void SubmitUpdateMachine()
     {
-        if (machine.Parent_id >= 0)
-        {
-            RelationModel parent = RelationDataAccess.GetRelation(machine.Parent_id);
-            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
-        }
-    }
-    private async Task SubmitUpdateMachine()
-    {
-        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedMachine);
     }
     #endregion
 }
