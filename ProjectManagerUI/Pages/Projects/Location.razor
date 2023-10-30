@@ -2,7 +2,7 @@
 @inject IEmptyClass EmptyClass
 
 <PageTitle>Projects - @EmptyClass.Location</PageTitle>
-<ProjectNavigation></ProjectNavigation>
+<ProjectNavigation emptyClass="@EmptyClass"></ProjectNavigation>
 <!-- Info cards -->
 <div class="row">
     <div class="col-lg-4 mb-3">
@@ -51,36 +51,19 @@
 </div>
 <!--  Edit menu -->
 <div class="dropup" style=" position: absolute; right: 20px; bottom: 20px;">
-    <button type="button" class="btn btn-primary p-2 dropdown" data-bs-toggle="dropdown">
-        <span class="oi oi-plus p-0" aria-hidden="true"></span>
+    <button type="button" class="btn btn-primary dropdown p-1" data-bs-toggle="dropdown">
+        <span class="oi oi-plus p-1" aria-hidden="true"></span>
     </button>
     <ul class="dropdown-menu">
-        <li><button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop" class="dropdown-item">Add</button></li>
-        <li><button type="button" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" class="dropdown-item">Edit</button></li>
+        <li><button type="button" data-bs-toggle="modal" data-bs-target="#addChildModal" class="dropdown-item">Add</button></li>
+        <li><button type="button" data-bs-toggle="modal" data-bs-target="#editRelationModal" class="dropdown-item">Edit</button></li>
     </ul>
 </div>
 <!-- Modal - Add child relation -->
-<div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel">Add new department</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <EditForm Model="@NewDepartment" OnSubmit="@SubmitAddDepartment" class="row g-3">
-                    <div class="col-12 mb-1">
-                        <label for="formGroupExampleInput2" class="form-label">Department name</label>
-                        <InputText class="form-control" id="formGroupExampleInput2" @bind-Value="NewDepartment!.Relation_name" />
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Add</button>
-                    </div>
-                </EditForm>
-            </div>
-        </div>
-    </div>
-</div>
+<AddChildModal NewChild="@NewDepartment" OnSubmitCallback="@SubmitAddDepartment"></AddChildModal>
+<!-- Modal - Edit relation -->
+<EditRelationModal UpdatedRelation="@UpdatedLocation" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdateLocation"></EditRelationModal>
+
 <!-- Modal - Delete child relation -->
 <div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
@@ -107,43 +90,20 @@
         </div>
     </div>
 </div>
-<!-- Modal - Edit relation -->
-<div class="modal fade" id="staticBackdrop2" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel2" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel2">Edit Location</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <EditForm Model="@UpdateLocation" OnSubmit="@SubmitUpdateLocation" class="row g-3">
-                    <div class="col-12 mb-1">
-                        <label for="formGroupExampleInput2" class="form-label">Location name</label>
-                        <InputText class="form-control" id="formGroupExampleInput2" @bind-Value="UpdateLocation!.Relation_name" />
-                    </div>
-                    <div class="col-12">
-                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Update</button>
-                    </div>
-                </EditForm>
-            </div>
-        </div>
-    </div>
-</div>
 @code {
     #region PageBase
     [Parameter]
     public int? LocationId { get; set; }
-
-    public int? ClickedCardId { get; set; }
-
-    public RelationModel location = new();
-    public List<RelationModel> ChildRelations = new();
-
-    protected override void OnInitialized()
+    private int? ClickedCardId { get; set; }
+    private RelationModel location = new();
+    private List<RelationModel> ChildRelations = new();
+    protected override async Task OnInitializedAsync()
     {
         GetRelationWithId();
-        GetChildRelations();
-        EmptyClass.SetLocation(location.Relation_name, LocationId);
+        await GetChildRelations();
+        EmptyClass.SetLocation(location.Relation_name, location.Id);
+        UpdatedLocation = location;
+        await GetPossibleParents();
     }
     //Get relation
     private void GetRelationWithId()
@@ -151,9 +111,9 @@
         location = RelationDataAccess.GetRelation(LocationId);
     }
     //Get all child relations
-    private void GetChildRelations()
+    private async Task GetChildRelations()
     {
-        ChildRelations = RelationDataAccess.GetChildRelations(LocationId);
+        ChildRelations = await RelationDataAccess.GetChildRelations(LocationId);
     }
     //Save clicked card's id
     protected void ClickCard(int? id)
@@ -162,30 +122,37 @@
     }
     #endregion
     #region FeatureCreateNewDepartment
-    public RelationModel NewDepartment = new();
-
+    private RelationModel NewDepartment = new();
     private async Task SubmitAddDepartment()
     {
         NewDepartment.Parent_id = LocationId;
         NewDepartment.Role_id = 2;
         var result = await RelationDataAccess.PostRelationAsync(NewDepartment);
-        GetChildRelations();
+        await GetChildRelations();
     }
     #endregion
     #region FeatureDeleteDepartment
     private async Task DeleteDepartment()
     {
         await RelationDataAccess.DeleteRelationAsync(ClickedCardId);
-        GetChildRelations();
+        await GetChildRelations();
     }
     #endregion
-
     #region FeatureUpdateLocation
-    public RelationModel UpdateLocation = new();
+    private RelationModel UpdatedLocation = new();
+    private List<RelationModel> PossibleParents = new();
+    private async Task GetPossibleParents()
+    {
+        if (location.Parent_id >= 0)
+        {
+            RelationModel parent = RelationDataAccess.GetRelation(location.Parent_id);
+            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
+        }
+    }
     private async Task SubmitUpdateLocation()
     {
-        var result = await RelationDataAccess.UpdateRelationAsync(LocationId, UpdateLocation.Relation_name);
-        GetChildRelations();
+        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedLocation);
+
     }
     #endregion
 }

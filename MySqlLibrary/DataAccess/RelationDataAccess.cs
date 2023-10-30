@@ -9,23 +9,22 @@ public static class RelationDataAccess
 {
     private static readonly string connectionString = "Server=127.0.0.1;Port=3306;Database=mydb;Uid=root;Pwd=admin;";
 
-    public static List<RelationModel> GetChildRelations(int? relationId)
+    public static async Task<List<RelationModel>> GetChildRelations(int? relationId)
     {
         if (relationId is null)
         {
-
                 using (IDbConnection connection = new MySqlConnection(connectionString))
                 {
-                    var output = connection.Query<RelationModel>($"SELECT * FROM mydb.Relations where parent_id IS NULL").ToList();
-                    return output;
+                var output = await connection.QueryAsync<RelationModel>($"SELECT * FROM mydb.Relations where parent_id IS NULL");
+                return output.ToList();
                 }
         }
         else
         {
             using (IDbConnection connection = new MySqlConnection(connectionString))
             {
-                var output = connection.Query<RelationModel>($"SELECT * FROM mydb.Relations where parent_id = {relationId}").ToList();
-                return output;
+                var output = await connection.QueryAsync<RelationModel>($"SELECT * FROM mydb.Relations where parent_id = {relationId}");
+                return output.ToList();
             }
         }
     }
@@ -47,20 +46,26 @@ public static class RelationDataAccess
     }
     public static async Task<int> DeleteRelationAsync(int? id)
     {
-
         using (IDbConnection connection = new MySqlConnection(connectionString))
         {
             var result = await connection.ExecuteAsync($"DELETE FROM `mydb`.`Relations` WHERE (`id` = '{id}');");
             return result;
         }
     }
-    public static async Task<int> UpdateRelationAsync(int? id, string? name)
+    public static async Task<int> UpdateRelationAsync(RelationModel relation)
     {
-
         using (IDbConnection connection = new MySqlConnection(connectionString))
         {
-            var result = await connection.ExecuteAsync($"UPDATE `mydb`.`Relations` SET `relation_name` = '{name}' WHERE (`id` = '{id}');");
-            return result;
+            if (relation.Parent_id is null)
+            {
+                var result = await connection.ExecuteAsync($"UPDATE `mydb`.`Relations` SET `relation_name` = '{relation.Relation_name}' WHERE (`id` = '{relation.Id}');");
+                return result;
+            }
+            else
+            {
+                var result = await connection.ExecuteAsync($"UPDATE `mydb`.`Relations` SET `relation_name` = '{relation.Relation_name}', `parent_id` = '{relation.Parent_id}' WHERE (`id` = '{relation.Id}');");
+                return result;
+            }
         }
     }
 }

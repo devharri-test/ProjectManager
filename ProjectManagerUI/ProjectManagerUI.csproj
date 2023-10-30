@@ -14,6 +14,7 @@
     <None Remove="Services\" />
     <None Remove="Shared\Projects\" />
     <None Remove="Shared\Projects\Cards\" />
+    <None Remove="Shared\Projects\Modals\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Data\" />
@@ -23,6 +24,7 @@
     <Folder Include="wwwroot\img\" />
     <Folder Include="Shared\Projects\" />
     <Folder Include="Shared\Projects\Cards\" />
+    <Folder Include="Shared\Projects\Modals\" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\MySqlLibrary\MySqlLibrary.csproj">

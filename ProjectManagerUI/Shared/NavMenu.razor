@@ -60,15 +60,15 @@
         collapseNavMenu = !collapseNavMenu;
     }
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        GetCildRelations();
+        await GetCildRelations();
     }
 
     //Get all child relations
-    private void GetCildRelations()
+    private async Task GetCildRelations()
     {
-        ChildRelations = RelationDataAccess.GetChildRelations(null);
+        ChildRelations = await RelationDataAccess.GetChildRelations(null);
     }
 
     }
