@@ -60,38 +60,10 @@
         <li><button type="button" data-bs-toggle="modal" data-bs-target="#editRelationModal" class="dropdown-item">Edit</button></li>
     </ul>
 </div>
-
-<!-- Modal - Add child relation -->
+<!-- Modals -->
 <AddChildModal ParentId="@FunctionGroupId" RoleId="7" OnSubmitCallback="@SubmitAddMachine"></AddChildModal>
-<!-- Modal - Edit relation -->
 <EditRelationModal UpdatedRelation="@functionGroup" ParentId="functionGroup.Parent_id" OnSubmitCallback="@SubmitUpdateFunctionGroup"></EditRelationModal>
-
-<!-- Modal - Delete child relation -->
-<div class="modal fade" id="staticBackdrop1" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel1" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticBackdropLabel1">Delete machine</h1>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body text-center">
-                <div class="row">
-                    <div class="col">
-                        Are you sure? This will delete machine and all its child relations!
-                    </div>
-                </div>
-                <div class="row justify-content-evenly">
-                    <div class="col-4">
-                        <button @onclick="DeleteMachine" type="button" class="btn btn-danger" data-bs-dismiss="modal">Delete</button>
-                    </div>
-                    <div class="col-4">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
+<DeleteChildModal ClickedCardId="@ClickedCardId" OnSubmitCallback="@SubmitDeleteMachine"></DeleteChildModal>
 @code {
     #region PageBase
     [Parameter]
@@ -127,9 +99,8 @@
     }
     #endregion
     #region FeatureDeleteMachine
-    private async Task DeleteMachine()
+    private async Task SubmitDeleteMachine()
     {
-        await RelationDataAccess.DeleteRelationAsync(ClickedCardId);
         await GetChildRelations();
     }
     #endregion

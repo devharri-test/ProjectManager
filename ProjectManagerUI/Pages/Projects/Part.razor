@@ -43,7 +43,6 @@
         </div>
     </div>
 </div>
-
 <!--  Edit menu -->
 <div class="dropup" style=" position: absolute; right: 20px; bottom: 20px;">
     <button type="button" class="btn btn-primary dropdown p-1" data-bs-toggle="dropdown">
@@ -53,19 +52,16 @@
         <li><button type="button" data-bs-toggle="modal" data-bs-target="#editRelationModal" class="dropdown-item">Edit</button></li>
     </ul>
 </div>
-
-<!-- Modal - Edit relation -->
-<EditRelationModal UpdatedRelation="@UpdatedPart" PossibleParents="@PossibleParents" OnSubmitCallback="@SubmitUpdatePart"></EditRelationModal>
+<!-- Modals -->
+<EditRelationModal UpdatedRelation="@part" ParentId="@part.Parent_id" OnSubmitCallback="@SubmitUpdatePart"></EditRelationModal>
 @code {
     [Parameter]
     public int PartId { get; set; }
     public RelationModel part = new();
-    protected override async Task OnInitializedAsync()
+    protected override void OnInitialized()
     {
         GetRelationWithId();
         EmptyClass.SetPart(part.Relation_name, PartId);
-        UpdatedPart = part;
-        await GetPossibleParents();
     }
     //Get relation
     private void GetRelationWithId()
@@ -73,19 +69,8 @@
         part = RelationDataAccess.GetRelation(PartId);
     }
     #region FeatureUpdatePart
-    private RelationModel UpdatedPart = new();
-    private List<RelationModel> PossibleParents = new();
-    private async Task GetPossibleParents()
+    private void SubmitUpdatePart()
     {
-        if (part.Parent_id >= 0)
-        {
-            RelationModel parent = RelationDataAccess.GetRelation(part.Parent_id);
-            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
-        }
-    }
-    private async Task SubmitUpdatePart()
-    {
-        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedPart);
     }
     #endregion
 }
