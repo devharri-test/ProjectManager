@@ -1,5 +1,6 @@
 ﻿@page "/projects/part/{PartId:int}"
 @inject IEmptyClass EmptyClass
+@inject RelationDataAccess relationDataAccess
 
 <PageTitle>Projects - @EmptyClass.Location</PageTitle>
 <ProjectNavigation emptyClass="@EmptyClass"></ProjectNavigation>
@@ -66,7 +67,7 @@
     //Get relation
     private void GetRelationWithId()
     {
-        part = RelationDataAccess.GetRelation(PartId);
+        part = relationDataAccess.GetRelation(PartId);
     }
     #region FeatureUpdatePart
     private void SubmitUpdatePart()

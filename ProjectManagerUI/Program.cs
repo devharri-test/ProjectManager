@@ -1,5 +1,7 @@
-﻿using Microsoft.AspNetCore.Components;
+﻿using System.Configuration;
+using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
+using MySqlLibrary.DataAccess;
 using ProjectManagerUI.Services;
 using ProjectManagerUI.Shared;
 
@@ -9,6 +11,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddRazorPages();
 builder.Services.AddServerSideBlazor();
 builder.Services.AddScoped<IEmptyClass, EmptyClass>();
+builder.Services.AddTransient<RelationDataAccess>();
+builder.Services.AddTransient<LocationDataAccess>();
+builder.Services.AddTransient<DepartmentDataAccess>();
+builder.Services.AddTransient<ProjectDataAccess>();
 
 var app = builder.Build();
 

@@ -1,0 +1,42 @@
+﻿@inject LocationDataAccess locationDataAccess
+
+<!-- Modal - Edit location info -->
+<div class="modal fade" id="editLocationInfoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editLocationInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editLocationInfoModalLabel">Edit location info</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <EditForm Model="@UpdatedLocation" OnSubmit="@OnSubmit" class="row g-3">
+                    <div class="col-12 mb-1">
+                        <label for="editLocationInfoModalInput1" class="form-label">Info</label>
+                        <InputText class="form-control" id="editLocationInfoModalInput1" @bind-Value="UpdatedLocation!.Location_info" />
+                    </div>
+                    <div class="col-12 mb-1">
+                        <label for="editLocationInfoModalInput2" class="form-label">Address</label>
+                        <InputText class="form-control" id="editLocationInfoModalInput2" @bind-Value="UpdatedLocation!.Address" />
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Update</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public LocationModel UpdatedLocation { get; set; } = new();
+    [Parameter]
+    public EventCallback OnSubmitCallback { get; set; }
+    protected override async Task OnInitializedAsync()
+    {   
+    }
+    public async Task OnSubmit()
+    {
+        var result = await locationDataAccess.UpdateLocationAsync(UpdatedLocation);
+        await OnSubmitCallback.InvokeAsync();
+    }
+}

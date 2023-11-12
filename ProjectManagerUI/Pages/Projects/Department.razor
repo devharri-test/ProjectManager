@@ -1,5 +1,7 @@
 ﻿@page "/projects/department/{DepartmentId:int}"
 @inject IEmptyClass EmptyClass
+@inject RelationDataAccess relationDataAccess
+@inject DepartmentDataAccess departmentDataAccess
 
 <PageTitle>Projects - @EmptyClass.Location</PageTitle>
 <ProjectNavigation emptyClass="@EmptyClass"></ProjectNavigation>
@@ -8,36 +10,31 @@
     <div class="col-lg-4 mb-3">
         <div class="card p-0 h-100" style="background-image: linear-gradient(180deg, rgba(25,55,80,1) 0%, rgba(50,110,129,1) 80%); color: rgb(250,250,250); ">
             <div class="card-header">
-                Info card
+                Information
             </div>
             <div class="card-body">
-                <h6>Info header</h6>
-                <p class="card-text">Informaton text here</p>
-                <p class="card-text">Informaton text here</p>
+                <p class="card-text">@departmentInfo.Department_info</p>
+                <p></p>
             </div>
         </div>
     </div>
     <div class="col-lg-4 mb-3">
         <div class="card p-0 h-100" style="background-image: linear-gradient(180deg, rgba(25,55,80,1) 0%, rgba(50,110,129,1) 80%); color: rgb(250,250,250); ">
             <div class="card-header">
-                Info card
+                
             </div>
             <div class="card-body">
-                <h6>Info header</h6>
-                <p class="card-text">Informaton text here</p>
-                <p class="card-text">Informaton text here</p>
+                <p class="card-text"></p>
             </div>
         </div>
     </div>
     <div class="col-lg-4 mb-3">
         <div class="card p-0 h-100" style="background-image: linear-gradient(180deg, rgba(25,55,80,1) 0%, rgba(50,110,129,1) 80%); color: rgb(250,250,250); ">
             <div class="card-header">
-                Info card
+                
             </div>
             <div class="card-body">
-                <h6>Info header</h6>
-                <p class="card-text">Informaton text here</p>
-                <p class="card-text">Informaton text here</p>
+                <p class="card-text"></p>
             </div>
         </div>
     </div>
@@ -56,19 +53,22 @@
     </button>
     <ul class="dropdown-menu">
         <li><button type="button" data-bs-toggle="modal" data-bs-target="#addChildModal" class="dropdown-item">Add</button></li>
-        <li><button type="button" data-bs-toggle="modal" data-bs-target="#editRelationModal" class="dropdown-item">Edit</button></li>
+        <li><button type="button" data-bs-toggle="modal" data-bs-target="#editRelationModal" class="dropdown-item">Edit relation</button></li>
+        <li><button type="button" data-bs-toggle="modal" data-bs-target="#editDepartmentInfoModal" class="dropdown-item">Edit info</button></li>
     </ul>
 </div>
 <!-- Modals -->
 <AddChildModal ParentId="@DepartmentId" RoleId="3" OnSubmitCallback="@SubmitAddProject"></AddChildModal>
 <EditRelationModal UpdatedRelation="@department" ParentId="@department.Parent_id" OnSubmitCallback="@SubmitUpdateDepartment"></EditRelationModal>
 <DeleteChildModal ClickedCardId="@ClickedCardId" OnSubmitCallback="@SubmitDeleteProject"></DeleteChildModal>
+<EditDepartmentInfoModal  UpdatedDepartment="@departmentInfo" OnSubmitCallback="@SubmitUpdateDepartment" ></EditDepartmentInfoModal>
 @code {
     #region PageBase
     [Parameter]
     public int DepartmentId { get; set; }
     private int? ClickedCardId { get; set; }
     private RelationModel department = new();
+    private DepartmentModel departmentInfo = new();
     private List<RelationModel> ChildRelations = new();
     protected override async Task OnInitializedAsync()
     {
@@ -79,12 +79,13 @@
     //Get relation
     private void GetRelationWithId()
     {
-        department = RelationDataAccess.GetRelation(DepartmentId);
+        department = relationDataAccess.GetRelation(DepartmentId);
+        departmentInfo = departmentDataAccess.GetDepartment(DepartmentId);
     }
     //Get all child relations
     private async Task GetChildRelations()
     {
-        ChildRelations = await RelationDataAccess.GetChildRelations(DepartmentId);
+        ChildRelations = await relationDataAccess.GetChildRelationsAsync(DepartmentId);
     }
     protected void ClickCard(int? id)
     {

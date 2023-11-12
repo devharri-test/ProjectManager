@@ -1,4 +1,6 @@
-﻿<!-- Modal - Add child relation -->
+﻿@inject RelationDataAccess relationDataAccess
+
+<!-- Modal - Add child relation -->
 <div class="modal fade" id="addChildModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="addChildModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -28,12 +30,11 @@
     [Parameter]
     public EventCallback OnSubmitCallback { get; set; }
     public RelationModel NewChild = new();
-
     public async Task OnSubmit()
     {
         NewChild.Parent_id = ParentId;
         NewChild.Role_id = RoleId;
-        var result = await RelationDataAccess.PostRelationAsync(NewChild);
+        var result = await relationDataAccess.PostRelationAsync(NewChild);
         await OnSubmitCallback.InvokeAsync();
     }
 }

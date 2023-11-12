@@ -2,18 +2,27 @@
 using Dapper;
 using MySqlLibrary.Models;
 using MySql.Data.MySqlClient;
+using Microsoft.Extensions.Configuration;
 
 namespace MySqlLibrary.DataAccess;
 
-public static class RelationDataAccess
+public class RelationDataAccess
 {
-    private static readonly string connectionString = "Server=127.0.0.1;Port=3306;Database=mydb;Uid=root;Pwd=admin;";
 
-    public static async Task<List<RelationModel>> GetChildRelations(int? relationId)
+    public IConfiguration _configuration;
+
+
+    public RelationDataAccess(IConfiguration configuration)
+    {
+        _configuration = configuration;
+
+    }
+
+    public async Task<List<RelationModel>> GetChildRelationsAsync(int? relationId)
     {
         if (relationId is null)
         {
-                using (IDbConnection connection = new MySqlConnection(connectionString))
+                using (IDbConnection connection = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
                 {
                 var output = await connection.QueryAsync<RelationModel>($"SELECT * FROM mydb.Relations where parent_id IS NULL");
                 return output.ToList();
@@ -21,40 +30,52 @@ public static class RelationDataAccess
         }
         else
         {
-            using (IDbConnection connection = new MySqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 var output = await connection.QueryAsync<RelationModel>($"SELECT * FROM mydb.Relations where parent_id = {relationId}");
                 return output.ToList();
             }
         }
     }
-    public static RelationModel GetRelation(int? id)
+    public RelationModel GetRelation(int? id)
     {
-        using (IDbConnection connection = new MySqlConnection(connectionString))
+        using (IDbConnection connection = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
         {
             var output = connection.Query<RelationModel>($"SELECT * FROM mydb.Relations where id = {id}").FirstOrDefault();
             return output ?? new RelationModel();
         }
     }
-    public static async Task<int> PostRelationAsync(RelationModel relation)
+    public async Task<int> PostRelationAsync(RelationModel relation)
     {
-            using (IDbConnection connection = new MySqlConnection(connectionString))
+            using (IDbConnection connection = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
             {
                 var result = await connection.ExecuteAsync($"INSERT INTO `mydb`.`Relations` (`relation_name`, `role_id`, `parent_id`) VALUES ('{relation.Relation_name}', '{relation.Role_id}', '{relation.Parent_id}')");
                 return result;
             }
     }
-    public static async Task<int> DeleteRelationAsync(int? id)
+    public async Task<string> DeleteRelationAsync(int? id)
     {
-        using (IDbConnection connection = new MySqlConnection(connectionString))
+        using (IDbConnection connection = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
         {
-            var result = await connection.ExecuteAsync($"DELETE FROM `mydb`.`Relations` WHERE (`id` = '{id}');");
-            return result;
+            try
+            {
+                var result = await connection.ExecuteAsync($"DELETE FROM `mydb`.`Relations` WHERE (`id` = '{id}');");
+                return "OK";
+            }
+            catch (Exception ex) when (ex.ToString().Contains("0x80004005"))
+            {
+                Console.WriteLine("Relation has child relations, cannot perform delete action");
+                return ex.ToString();
+            }
+            catch (Exception ex)
+            {
+                return ex.ToString();
+            }
         }
     }
-    public static async Task<int> UpdateRelationAsync(RelationModel relation)
+    public async Task<int> UpdateRelationAsync(RelationModel relation)
     {
-        using (IDbConnection connection = new MySqlConnection(connectionString))
+        using (IDbConnection connection = new MySqlConnection(_configuration.GetConnectionString("DefaultConnection")))
         {
             if (relation.Parent_id is null)
             {

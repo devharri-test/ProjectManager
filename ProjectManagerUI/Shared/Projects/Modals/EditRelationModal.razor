@@ -1,4 +1,6 @@
-﻿<!-- Modal - Edit relation -->
+﻿@inject RelationDataAccess relationDataAccess
+
+<!-- Modal - Edit relation -->
 <div class="modal fade" id="editRelationModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editRelationModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -8,11 +10,11 @@
             </div>
             <div class="modal-body text-center">
                 <EditForm Model="@UpdatedRelation" OnSubmit="@OnSubmit" class="row g-3">
-                    <div class="col-12 mb-1">
+                    <div class="col-6 mb-1">
                         <label for="editRelationModalInput1" class="form-label">Name</label>
                         <InputText class="form-control" id="editRelationModalInput1" @bind-Value="UpdatedRelation!.Relation_name" />
                     </div>
-                    <div class="col-12 mb-1">
+                    <div class="col-6 mb-1">
                         <label for="editRelationModalInput2" class="form-label">Parent relation</label>
                         <InputSelect class="form-select" id="editRelationModalInput2" @bind-Value="UpdatedRelation!.Parent_id">
                             <option selected>Select parent ...</option>
@@ -40,25 +42,22 @@
     public int? ParentId { get; set; }
     [Parameter]
     public EventCallback OnSubmitCallback { get; set; }
-
     protected override async Task OnInitializedAsync()
     {
         await GetPossibleParents();
     }
-
     private List<RelationModel> PossibleParents = new();
     private async Task GetPossibleParents()
     {
         if (ParentId >= 0)
         {
-            RelationModel parent = RelationDataAccess.GetRelation(ParentId);
-            PossibleParents = await RelationDataAccess.GetChildRelations(parent.Parent_id);
+            RelationModel parent = relationDataAccess.GetRelation(ParentId);
+            PossibleParents = await relationDataAccess.GetChildRelationsAsync(parent.Parent_id);
         }
     }
-
     public async Task OnSubmit()
     {
-        var result = await RelationDataAccess.UpdateRelationAsync(UpdatedRelation);
+        var result = await relationDataAccess.UpdateRelationAsync(UpdatedRelation);
         await OnSubmitCallback.InvokeAsync();
     }
 }

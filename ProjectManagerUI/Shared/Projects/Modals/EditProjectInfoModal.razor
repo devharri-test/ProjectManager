@@ -1,0 +1,41 @@
+﻿@inject ProjectDataAccess projectDataAccess
+<!-- Modal - Edit project info -->
+<div class="modal fade" id="editProjectInfoModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="editProjectInfoModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editProjectInfoModalLabel">Edit project info</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <EditForm Model="@UpdatedProject" OnSubmit="@OnSubmit" class="row g-3">
+                    <div class="col-12 mb-1">
+                        <label for="editProjectInfoModalInput1" class="form-label">Info</label>
+                        <InputText class="form-control" id="editProjectInfoModalInput1" @bind-Value="UpdatedProject!.Project_info" />
+                    </div>
+                    <div class="col-12 mb-1">
+                        <label for="editProjectInfoModalInput2" class="form-label">Finance id</label>
+                        <InputText class="form-control" id="editProjectInfoModalInput2" @bind-Value="UpdatedProject!.Project_finance_id" />
+                    </div>
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary" data-bs-dismiss="modal">Update</button>
+                    </div>
+                </EditForm>
+            </div>
+        </div>
+    </div>
+</div>
+@code {
+    [Parameter]
+    public ProjectModel UpdatedProject { get; set; } = new();
+    [Parameter]
+    public EventCallback OnSubmitCallback { get; set; }
+    protected override async Task OnInitializedAsync()
+    {
+    }
+    public async Task OnSubmit()
+    {
+        var result = await projectDataAccess.UpdateProjectAsync(UpdatedProject);
+        await OnSubmitCallback.InvokeAsync();
+    }
+}

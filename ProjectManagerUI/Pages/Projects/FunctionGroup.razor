@@ -1,5 +1,6 @@
 ﻿@page "/projects/function-group/{FunctionGroupId:int}"
 @inject IEmptyClass EmptyClass
+@inject RelationDataAccess relationDataAccess
 
 <PageTitle>Projects - @EmptyClass.Location</PageTitle>
 <ProjectNavigation emptyClass="@EmptyClass"></ProjectNavigation>
@@ -80,12 +81,12 @@
     //Get relation
     private void GetRelationWithId()
     {
-        functionGroup = RelationDataAccess.GetRelation(FunctionGroupId);
+        functionGroup = relationDataAccess.GetRelation(FunctionGroupId);
     }
     //Get all child relations
     private async Task GetChildRelations()
     {
-        ChildRelations = await RelationDataAccess.GetChildRelations(FunctionGroupId);
+        ChildRelations = await relationDataAccess.GetChildRelationsAsync(FunctionGroupId);
     }
     protected void ClickCard(int? id)
     {

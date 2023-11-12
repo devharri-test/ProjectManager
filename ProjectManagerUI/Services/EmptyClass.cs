@@ -46,7 +46,6 @@ public class EmptyClass : IEmptyClass
     {
 
     }
-
     public void SetLocation(string? location, int? id)
     {
         _Location = location;

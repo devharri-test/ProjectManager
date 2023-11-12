@@ -1,5 +1,6 @@
 ﻿@page "/projects/controller/{ControllerId:int}"
 @inject IEmptyClass EmptyClass
+@inject RelationDataAccess relationDataAccess
 
 <PageTitle>Projects - @EmptyClass.Location</PageTitle>
 <ProjectNavigation emptyClass="@EmptyClass"></ProjectNavigation>
@@ -80,12 +81,12 @@
     //Get relation
     private void GetRelationWithId()
     {
-        controller = RelationDataAccess.GetRelation(ControllerId);
+        controller = relationDataAccess.GetRelation(ControllerId);
     }
     //Get all child relations
     private async Task GetChildRelations()
     {
-        ChildRelations = await RelationDataAccess.GetChildRelations(ControllerId);
+        ChildRelations = await relationDataAccess.GetChildRelationsAsync(ControllerId);
     }
     protected void ClickCard(int? id)
     {
